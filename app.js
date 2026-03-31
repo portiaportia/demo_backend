@@ -90,3 +90,12 @@ let houses = [
         ]
     }
 ]
+
+app.get("/api/houses",(req,res)=>{
+  res.send(houses);
+});
+
+//listen for incoming requests
+app.listen(3001, ()=>{
+  console.log("Server is up and running");
+});
