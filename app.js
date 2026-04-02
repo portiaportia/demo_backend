@@ -77,7 +77,7 @@ let houses = [
             "outdoor kitchen",
             "pool house"
         ],
-        "main_image": "farm.webp",
+        "main_image": "lake-house.jpg",
         "floor_plans": [
             {
                 "name": "Main Level",
