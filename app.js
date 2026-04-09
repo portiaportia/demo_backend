@@ -102,8 +102,29 @@ app.get("/api/houses/:id", (req,res)=>{
 });
 
 app.post("/api/houses", upload.single("img") ,(req,res)=>{
-    console.log("In post request");
+    //console.log("In post request");
+    //console.log(req.body);
+    const result = validateHouse(req.body);
+
+    if(result.error){
+        console.log("Error in validation");
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+    console.log("Passed validation");
 });
+
+const validateHouse = (house) => {
+    const schema = Joi.object({
+        _id:Joi.allow(""),
+        name:Joi.string().min(3).required(),
+        size:Joi.number().required().min(0),
+        bedrooms:Joi.number().required().min(0),
+        bathrooms:Joi.number().required().min(0)
+    });
+
+    return schema.validate(house);
+};
 
 //listen for incoming requests
 const port = process.env.PORT || 3001;
