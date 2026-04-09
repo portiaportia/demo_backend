@@ -112,6 +112,23 @@ app.post("/api/houses", upload.single("img") ,(req,res)=>{
         return;
     }
     console.log("Passed validation");
+
+    const house = {
+        _id:houses.length+1,
+        name:req.body.name,
+        size:req.body.size,
+        bedrooms:req.body.bedrooms,
+        bathrooms:req.body.bathrooms
+    }
+
+    //adding an image
+    if(req.file){
+        house.main_image = req.file.filename;
+    }
+
+    houses.push(house);
+    //console.log(houses);
+    res.status(200).send(house);
 });
 
 const validateHouse = (house) => {
@@ -120,7 +137,8 @@ const validateHouse = (house) => {
         name:Joi.string().min(3).required(),
         size:Joi.number().required().min(0),
         bedrooms:Joi.number().required().min(0),
-        bathrooms:Joi.number().required().min(0)
+        bathrooms:Joi.number().required().min(0),
+        features:Joi.allow("")
     });
 
     return schema.validate(house);
