@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const Joi = require("joi");
 const app = express();
 app.use(express.static("public"));
 app.use(express.json());
@@ -98,6 +99,10 @@ app.get("/api/houses",(req,res)=>{
 app.get("/api/houses/:id", (req,res)=>{
   const house=houses.find((h)=>h._id===parseInt(req.params.id));
   res.send(house);
+});
+
+app.post("/api/houses", upload.single("img") ,(req,res)=>{
+    console.log("In post request");
 });
 
 //listen for incoming requests
