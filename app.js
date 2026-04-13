@@ -112,13 +112,14 @@ app.post("/api/houses", upload.single("img") ,(req,res)=>{
         return;
     }
     console.log("Passed validation");
-
+    console.log(req.body);
     const house = {
         _id:houses.length+1,
         name:req.body.name,
         size:req.body.size,
         bedrooms:req.body.bedrooms,
-        bathrooms:req.body.bathrooms
+        bathrooms:req.body.bathrooms,
+        features:req.body.features.split(/\r?\n/).filter(line => line.trim() !== "")
     }
 
     //adding an image
