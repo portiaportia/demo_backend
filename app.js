@@ -132,6 +132,53 @@ app.post("/api/houses", upload.single("img") ,(req,res)=>{
     res.status(200).send(house);
 });
 
+app.put("/api/houses/:id", upload.single("img") , (req,res)=>{
+    console.log("In put");
+    //console.log(req.body);
+
+    const house = houses.find((h)=>h._id===parseInt(req.params.id));
+    
+    if(!house){
+        res.status(404).send("The house you wanted to modify is not available");
+        return;
+    }
+
+    const result = validateHouse(req.body);
+
+    if(result.error){
+        console.log("Error in validation");
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
+    house.name = req.body.name;
+    house.size = req.body.size;
+    house.bedrooms = req.body.bedrooms;
+    house.bathrooms = req.body.bathrooms;
+    house.features = req.body.features.split(/\r?\n/).filter(line => line.trim() !== "");
+
+    //adding an image
+    if(req.file){
+        house.main_image = req.file.filename;
+    }
+
+    res.status(200).send(house);
+
+});
+
+app.delete("/api/houses/:id", (req,res)=>{
+    const house = houses.find((h)=>h._id===parseInt(req.params.id));
+
+    if(!house){
+        res.status(404).send("The house you wanted to delete is not available");
+        return;
+    }
+
+    const index = houses.indexOf(house);
+    houses.splice(index,1);
+    res.status(200).send(house);
+});
+
 const validateHouse = (house) => {
     const schema = Joi.object({
         _id:Joi.allow(""),
