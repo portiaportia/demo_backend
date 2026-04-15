@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -20,7 +21,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 mongoose
-  .connect("mongodb+srv://portiaportia:II7EPdwPI0Rihf5c@data.ng58qmq.mongodb.net/")
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("connected to mongodb");
   })
