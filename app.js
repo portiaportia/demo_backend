@@ -80,16 +80,8 @@ app.post("/api/houses", upload.single("img") ,async(req,res)=>{
     res.status(200).send(newHouse);
 });
 
-app.put("/api/houses/:id", upload.single("img") , (req,res)=>{
+app.put("/api/houses/:id", upload.single("img") , async(req,res)=>{
     console.log("In put");
-    //console.log(req.body);
-
-    const house = houses.find((h)=>h._id===parseInt(req.params.id));
-    
-    if(!house){
-        res.status(404).send("The house you wanted to modify is not available");
-        return;
-    }
 
     const result = validateHouse(req.body);
 
@@ -99,19 +91,26 @@ app.put("/api/houses/:id", upload.single("img") , (req,res)=>{
         return;
     }
 
-    house.name = req.body.name;
-    house.size = req.body.size;
-    house.bedrooms = req.body.bedrooms;
-    house.bathrooms = req.body.bathrooms;
-    house.features = req.body.features.split(/\r?\n/).filter(line => line.trim() !== "");
-
+    const fieldsToUpdate = {
+        name: req.body.name,
+        size: req.body.size,
+        bedrooms: req.body.bedrooms,
+        bathrooms: req.body.bathrooms,
+        features: req.body.features.split(/\r?\n/).filter(line => line.trim() !== "")
+    }
     //adding an image
     if(req.file){
-        house.main_image = req.file.filename;
+        fieldsToUpdate.main_image = req.file.filename;
     }
 
-    res.status(200).send(house);
+    const success = await House.updateOnehouse({_id:req.params.id}, fieldsToUpdate);
 
+    if(!success) {
+        res.status(404).send("We couldn't find that house");
+    } else {
+        const house = await House.findById(req.params.id);
+        res.status(200).send(house);
+    }
 });
 
 app.delete("/api/houses/:id", (req,res)=>{
