@@ -41,7 +41,7 @@ const houseSchema = new mongoose.Schema({
 const House = mongoose.model("House", houseSchema);
 
 app.get("/api/houses",async(req,res)=>{
-    const houses = House.find();
+    const houses = await House.find();
     res.send(houses);
 });
 
