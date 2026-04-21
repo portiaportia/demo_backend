@@ -50,7 +50,7 @@ app.get("/api/houses/:id", async(req,res)=>{
   res.send(house);
 });
 
-app.post("/api/houses", upload.single("img") ,(req,res)=>{
+app.post("/api/houses", upload.single("img") ,async(req,res)=>{
     //console.log("In post request");
     //console.log(req.body);
     const result = validateHouse(req.body);
@@ -62,23 +62,22 @@ app.post("/api/houses", upload.single("img") ,(req,res)=>{
     }
     console.log("Passed validation");
     console.log(req.body);
-    const house = {
-        _id:houses.length+1,
+    const house = new House({
         name:req.body.name,
         size:req.body.size,
         bedrooms:req.body.bedrooms,
         bathrooms:req.body.bathrooms,
         features:req.body.features.split(/\r?\n/).filter(line => line.trim() !== "")
-    }
+    });
 
     //adding an image
     if(req.file){
         house.main_image = req.file.filename;
     }
 
-    houses.push(house);
+    const newHouse = await house.save();
     //console.log(houses);
-    res.status(200).send(house);
+    res.status(200).send(newHouse);
 });
 
 app.put("/api/houses/:id", upload.single("img") , (req,res)=>{
