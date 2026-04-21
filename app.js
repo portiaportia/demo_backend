@@ -113,16 +113,14 @@ app.put("/api/houses/:id", upload.single("img") , async(req,res)=>{
     }
 });
 
-app.delete("/api/houses/:id", (req,res)=>{
-    const house = houses.find((h)=>h._id===parseInt(req.params.id));
+app.delete("/api/houses/:id", async(req,res)=>{
+    const house = await House.findByIdAndDelete(req.params.id);
 
     if(!house){
         res.status(404).send("The house you wanted to delete is not available");
         return;
     }
 
-    const index = houses.indexOf(house);
-    houses.splice(index,1);
     res.status(200).send(house);
 });
 
